@@ -1,0 +1,940 @@
+.ascora-shop .ascora-row {
+    gap: 0;
+}
+
+.ascora-shop .ascora-row .ascora-shop-sidebar {
+    margin-right: 10px;
+}
+
+/* grid View Style */
+#ascora-products.grid-view.columns-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#ascora-products.grid-view.columns-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* List View Style */
+#ascora-products.list-view li {
+    width: 100%;
+    display: flex;
+}
+
+.ascora-wc-shop-page-style {
+    margin-bottom: 10px;
+}
+
+/* Cart Block Style */
+.ascora-cart-wrapper {
+    width: 100%;
+    margin: 20px 0;
+}
+
+.ascora-cart-header,
+.ascora-cart-item {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.ascora-cart-header {
+    font-weight: bold;
+    background: #f8f8f8;
+}
+
+.ascora-cart-item .thumb img {
+    width: 80px;
+    height: auto;
+}
+
+.ascora-cart-item .remove {
+    cursor: pointer;
+    color: red;
+    font-size: 18px;
+}
+
+.ascora-cart-totals {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    width: 300px;
+    float: right;
+}
+
+.ascora-cart-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.ascora-empty-cart {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.ascora-btn {
+    background: #0073aa;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+
+/* Basic Compare CSS */
+.ascora-compare {
+    cursor: pointer;
+}
+
+.ascora-compare.added {
+    color: #f00;
+}
+
+.ascora-compare-table {
+    width: 100%;
+    text-align: center;
+}
+
+.ascora-compare-table td {
+    padding: 20px;
+}
+
+/* Ascora WhitList */
+.wishlist-icon {
+    cursor: pointer;
+    font-size: 20px;
+    color: #ccc;
+    transition: color 0.3s;
+}
+
+.wishlist-icon.active {
+    color: #e74c3c;
+}
+
+.ascora-woo-menu .ascora-wishlist a {
+    position: relative;
+}
+
+.ascora-woo-menu .ascora-wishlist span {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    background-color: #260ab3;
+    color: #fff;
+    font-size: 12px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.wishlist-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.remove-wishlist {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* ---------------------------
+   Ascora Advanced Product Card
+   Ratio: 1:1 square
+   Transitions: 0.6s (Ultra Smooth)
+   --------------------------- */
+
+.ascora-product-box {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ascora-card {
+    transition: background-color 0.6s cubic-bezier(.2, .8, .2, 1), box-shadow 0.6s cubic-bezier(.2, .8, .2, 1), transform 0.6s cubic-bezier(.2, .8, .2, 1);
+    border-radius: 0;
+    overflow: visible;
+    position: relative;
+    background: transparent;
+    isolation: isolate;
+    z-index: 0;
+}
+
+/* Thumbnail / media wrapper */
+.product-thumbnail {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0;
+}
+
+/* Maintain 1:1 square ratio */
+.product-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f7f7f7;
+    overflow: hidden;
+    display: block;
+}
+
+/* Images: stacked absolute for fade/hover swap */
+.product-img {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(.2, .8, .2, 1);
+}
+
+/* secondary image sits on top with opacity 0 */
+.product-img-hover {
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(.2, .8, .2, 1);
+}
+
+/* Badges (left-top) */
+.product-badges {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 40;
+}
+
+.product-badges .badge {
+    background: #f00;
+    color: #fff;
+    padding: 6px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    line-height: 1;
+    border-radius: 50%;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+/* Actions (right-top) fly-in */
+.product-actions {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 40;
+    transform: translateX(8px);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(.2, .8, .2, 1), opacity 0.6s cubic-bezier(.2, .8, .2, 1);
+}
+
+.ascora-card .action-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: transform 0.24s ease;
+}
+
+.ascora-card .action-btn:active {
+    transform: scale(.98);
+}
+
+/* slid-up overlay (hidden) */
+.slid-up {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -48px;
+    /* hidden below */
+    z-index: 40;
+    transition: bottom 0.6s cubic-bezier(.2, .8, .2, 1), opacity 0.6s cubic-bezier(.2, .8, .2, 1);
+    opacity: 0;
+    pointer-events: none;
+    background-color: #3d89af;
+}
+
+.slid-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+/* wishlist / rating inside slid-up */
+.slid-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.slid-wishlist .wishlist-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.slid-wishlist .wishlist-icon.active {
+    color: #e74c3c;
+}
+
+/* content area */
+.product-content {
+    padding: 14px 10px 0;
+    transition: background-color 0.6s cubic-bezier(.2, .8, .2, 1);
+    text-align: center;
+    position: relative;
+}
+
+.product-title {
+    font-size: 16px;
+    margin: 0 0 6px;
+    line-height: 1.2;
+    overflow: hidden;
+}
+
+.product-category {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+.product-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+}
+
+.product-price {
+    font-weight: 700;
+}
+
+.product-rating {
+    font-size: 14px;
+    color: #f6c23e;
+}
+
+.ascora-content-show {
+    z-index: 998;
+    background-color: #fff;
+}
+
+.ascora-hover-show .product-short-desc {
+    padding: 15px;
+}
+
+/* ascora-hover-show hidden by default */
+.ascora-hover-show {
+    opacity: 0;
+    pointer-events: none;
+    padding-bottom: 15px;
+    background-color: #fff;
+    z-index: 100;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    transition: top 0.6s cubic-bezier(.2, .8, .2, 1), opacity 0.6s cubic-bezier(.2, .8, .2, 1);
+}
+
+/* Hover effects on card */
+.ascora-card:hover {
+    background-color: #ffffff;
+    box-shadow: 0 12px 34px rgba(18, 32, 55, 0.12);
+    transform: translateY(-4px);
+    z-index: 99;
+    transform: scale(1.05);
+}
+
+/* Show actions on hover */
+.ascora-card:hover .product-actions {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Fade-in secondary image on hover */
+.ascora-card:hover .product-img-main img {
+    transform: scale(1.04);
+}
+
+.ascora-card:hover .product-img-hover {
+    opacity: 1;
+}
+
+/* slide-up into view */
+.ascora-card:hover .slid-up {
+    bottom: 0;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* show hover content */
+.ascora-card:hover .ascora-hover-show {
+    top: 100%;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.product-price ins {
+    text-decoration: none;
+}
+
+/* small responsive */
+@media (max-width: 768px) {
+    .product-actions {
+        right: 8px;
+        top: 8px;
+    }
+
+    .product-content {
+        padding: 10px 8px 8px;
+    }
+}
+
+.product-media {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-card .product-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.product-card .product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Main Image */
+.product-card .product-img-main {
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+/* Hover Image */
+.product-card .product-img-hover {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+/* ---------- KEY FIX ---------- */
+/* Fade only if secondary image exists */
+.product-card.has-hover-img:hover .product-img-main {
+    opacity: 0;
+}
+
+.product-card.has-hover-img:hover .product-img-hover {
+    opacity: 1;
+}
+
+/* Color Dots Style */
+.ascora-color-variations {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.ascora-color-variations .color-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.ascora-color-variations .color-dot:hover {
+    transform: scale(1.15);
+    border-color: #333;
+}
+
+#ascora-products.loading {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.ascora-color-variations {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.ascora-product-box .slid-up span.color-dot {
+    width: 16px;
+    height: 16px;
+}
+
+.ascora-color-swatch {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    margin-right: 5px;
+}
+
+.color-dot.active {
+    border: 2px solid #000;
+}
+
+.ascora-wc-shop-page-style {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Single Product page */
+/* Basic modern 2-column product layout */
+.ascora-single-product {
+    padding: 30px;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    color: #0f1724;
+}
+
+.ascora-product-grid {
+    display: grid;
+    grid-template-columns: 52% 1fr;
+    gap: 28px;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.asp-right {
+    padding: 6px 0;
+}
+
+.asp-gallery-swiper {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f7f7f7;
+}
+
+.asp-gallery-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.asp-thumbs {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.asp-thumb-item {
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #eee;
+}
+
+.asp-thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Right column */
+.asp-title {
+    font-size: 24px;
+    margin: 0 0 8px;
+}
+
+.asp-brand {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.asp-price-rating {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 12px 0;
+}
+
+.asp-price {
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.asp-rating {
+    color: #f6c23e;
+}
+
+.asp-short-desc {
+    color: #444;
+    margin-bottom: 12px;
+}
+
+/* Tabs */
+.asp-tabs {
+    margin-top: 28px;
+    border-top: 1px solid #eee;
+    padding-top: 18px;
+}
+
+.asp-tab-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: 0;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    color: #334155;
+}
+
+.tab-btn.active {
+    background: #0f1724;
+    color: #fff;
+}
+
+/* Panels */
+.tab-panel {
+    display: none;
+    margin-top: 18px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Related */
+.asp-related {
+    margin-top: 30px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .ascora-product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .asp-thumbs {
+        overflow-x: auto;
+    }
+}
+
+/* Zoom effect */
+.asp-left {
+    width: 100%;
+}
+
+.asp-gallery-swiper {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.asp-gallery-swiper img {
+    width: 100%;
+    cursor: zoom-in;
+    transition: transform .3s ease;
+}
+
+/* Thumbnail */
+.asp-thumbs-swiper {
+    width: 100%;
+    height: 90px;
+}
+
+.asp-thumbs-swiper .swiper-slide {
+    width: 90px;
+    height: 90px;
+    opacity: .5;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.asp-thumbs-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+    border-color: #111;
+}
+
+.asp-thumbs-swiper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.asp-zoom-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.asp-main-img {
+    width: 100%;
+    transition: transform 0.2s ease-out;
+    transform-origin: center center;
+    pointer-events: none;
+}
+
+.asp-qty-box {
+    display: flex;
+    width: 140px;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.asp-qty-box button {
+    width: 40px;
+    height: 45px;
+    border: none;
+    background: #f5f5f5;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.asp-qty-box input.qty {
+    width: 60px;
+    height: 45px;
+    border: none;
+    text-align: center;
+    font-size: 18px;
+}
+
+.ascora-color-variations {
+    display: flex;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.color-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.color-dot:hover,
+.color-dot.active {
+    border-color: #000;
+    transform: scale(1.1);
+}
+
+/* Quantity +/- Buttons */
+.quantity {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.quantity input.qty {
+    width: 60px !important;
+    height: 45px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.qty-btn {
+    width: 36px;
+    height: 45px;
+    font-size: 20px;
+    line-height: 45px;
+    text-align: center;
+    cursor: pointer;
+    background: #f2f2f2;
+    border: 1px solid #ddd;
+    user-select: none;
+}
+
+
+
+/* Modern Card */
+.asp-modern-card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    padding: 25px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: 0.3s;
+}
+
+.asp-modern-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
+}
+
+/* Section Title */
+.asp-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+/* Variation Form Style */
+.asp-variations table.variations {
+    width: 100%;
+}
+
+.asp-variations .variation {
+    margin-bottom: 12px;
+}
+
+.asp-variations select {
+    width: 100% !important;
+    padding: 12px !important;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.asp-variations select:hover {
+    border-color: #0d6efd;
+}
+
+/* Quantity + Add to Cart Modern Style */
+.asp-add-to-cart button,
+.single_add_to_cart_button {
+    width: 100%;
+    padding: 14px !important;
+    font-size: 17px !important;
+    font-weight: 600;
+    background: #0d6efd !important;
+    border-radius: 10px !important;
+    transition: 0.3s !important;
+}
+
+.asp-add-to-cart button:hover,
+.single_add_to_cart_button:hover {
+    background: #0055d4 !important;
+}
+
+/* color-dot UI */
+.ascora-color-variations {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.ascora-color-variations .color-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #EEE;
+    cursor: pointer;
+    transition: all .18s ease;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .04) inset;
+}
+
+.ascora-color-variations .color-dot.active {
+    transform: scale(1.08);
+    border-color: #111;
+}
+
+/* Quantity +/- wrapper and buttons */
+.asp-qty-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.asp-qty-wrapper .qty-btn {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 18px;
+}
+
+.asp-qty-wrapper input.qty {
+    width: 72px;
+    height: 38px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+@media (max-width: 1100px) {
+    .ascora-shop .ascora-row {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .ascora-shop .ascora-shop-sidebar {
+        order: 2;
+    }
+
+    .ascora-shop .ascora-wc-content {
+        order: 1;
+    }
+
+    .ascora-shop .ascora-shop-sidebar,
+    .ascora-shop .ascora-wc-content {
+        width: 100% !important;
+        flex: 0 0 auto;
+    }
+
+}

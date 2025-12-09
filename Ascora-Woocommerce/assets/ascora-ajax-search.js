@@ -1,13 +1,29 @@
 jQuery(function ($) {
 
-    $("#s").on("keyup", function () {
+    const $input = $("#s");
+    const $results = $(".as-search-results");
+    const $form = $("#as-wc-searchform");
+
+    /**
+     * LABEL CLICK → focus input + hide results
+     */
+    $("label[for='s']").on("click", function () {
+        $input.trigger("focus");
+        $results.hide();
+    });
+
+
+    /**
+     * INPUT KEYUP → AJAX Search
+     */
+    $input.on("keyup", function () {
 
         let keyword = $(this).val();
         let cat = $("#product_cat").val();
 
         if (keyword.length < 2) {
-            $("#s").removeClass("loading");
-            $(".as-search-results").html("").hide();
+            $(this).removeClass("loading");
+            $results.html("").hide();
             return;
         }
 
@@ -21,18 +37,12 @@ jQuery(function ($) {
             },
 
             beforeSend: function () {
-                // add class for spinner
-                $("#s").addClass("loading");
-
-                $(".as-search-results")
-                    .html("<div class='loading'>Loading...</div>")
-                    .show();
+                $input.addClass("loading");
+                $results.html("<div class='loading'>Loading...</div>").show();
             },
 
             success: function (res) {
-
-                // remove loading spinner
-                $("#s").removeClass("loading");
+                $input.removeClass("loading");
 
                 let html = "<ul>";
 
@@ -45,8 +55,7 @@ jQuery(function ($) {
                                     <strong>${item.title}</strong><br>
                                     <span>${item.price}</span>
                                 </div>
-                            </li>
-                        `;
+                            </li>`;
                     });
                 } else {
                     html += "<li>No products found</li>";
@@ -54,10 +63,36 @@ jQuery(function ($) {
 
                 html += "</ul>";
 
-                $(".as-search-results").html(html).show();
+                $results.html(html).show();
             }
         });
+    });
 
+
+    /**
+     * CLICK OUTSIDE → hide results
+     */
+    $(document).on("click", function (e) {
+        if (
+            !$(e.target).closest(".ascora-wc-product-search").length && 
+            !$(e.target).is("#s")
+        ) {
+            $results.hide();
+        }
+    });
+    // When input is cleared by browser "X" icon
+    $("#s").on("input", function () {
+        if ($(this).val().length < 1) {
+            $(".as-search-results").html("").hide();
+        }
+    });
+    /**
+     * INPUT FOCUS → show results (if any text exists)
+     */
+    $input.on("focus", function () {
+        if ($(this).val().length >= 2) {
+            $results.show();
+        }
     });
 
 });

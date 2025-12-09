@@ -54,20 +54,20 @@ function ascora_ajax_search()
 
     wp_send_json($results);
 }
-function ascora_wc_scripts()
+function as_wc_scripts()
 {
     // আগের কোড থাকবে...
 
     wp_enqueue_script(
-        'ascora-wc',
+        'ascora-ajax-wc',
         ASCORA_WC_URL . 'assets/ascora-ajax-search.js',
         ['jquery'],
         ASCORA_WC_VERSION,
         true
     );
 
-    wp_localize_script('ascora-wc', 'ascoraSearch', [
-        'ajax_url' => admin_url('admin-ajax.php'),
+    wp_localize_script('ascora-ajax-wc', 'ascoraSearch', [
+        'ajax_url' => admin_url('admin-ajax-ajax.php'),
     ]);
 }
-add_action('wp_enqueue_scripts', 'ascora_wc_scripts');
+add_action('wp_enqueue_scripts', 'as_wc_scripts');

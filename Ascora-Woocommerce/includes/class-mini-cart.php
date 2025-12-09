@@ -1,151 +1,147 @@
 <?php
-/**
- * Plugin Name: Ascora Mini Cart (Slide Out)
- * Description: WooCommerce-এর জন্য একটি শর্টকোড-ভিত্তিক স্লাইড-আউট মিনি-কার্ট যোগ করে।
- * Version: 1.0.1
- * Author: Gemini
- * Requires at least: 5.0
- * Requires PHP: 7.0
- */
+defined('ABSPATH') || exit;
 
-if (!defined('ABSPATH')) {
-    exit; // Direct access blocked
-}
-
-class Ascora_Slide_Mini_Cart
+class Ascora_Mini_Cart
 {
     public function __construct()
     {
-        // Ensure WooCommerce is active
-        if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-            add_shortcode('ascora_mini_cart', [$this, 'render_mini_cart_shortcode']);
-            add_action('wp_enqueue_scripts', [$this, 'enqueue_mini_cart_assets']);
-            add_filter('woocommerce_add_to_cart_fragments', [$this, 'mini_cart_fragment']);
-            add_filter('woocommerce_add_to_cart_fragments', [$this, 'cart_count_fragment']);
-        }
+        // Shortcode → icon + drawer
+        add_shortcode('ascora-mini-cart', [$this, 'render_icon_and_drawer']);
+
+        // Ajax load mini cart
+        add_action('wp_ajax_nopriv_ascora_load_mini_cart', [$this, 'load_mini_cart'], 1);
+        add_action('wp_ajax_ascora_load_mini_cart', [$this, 'load_mini_cart'], 1);
+
+
+        // Ajax remove item
+        add_action('wp_ajax_ascora_remove_cart_item', [$this, 'remove_cart_item']);
+        add_action('wp_ajax_nopriv_ascora_remove_cart_item', [$this, 'remove_cart_item']);
+
+        // Ajax update quantity
+        add_action('wp_ajax_ascora_update_qty', [$this, 'update_quantity']);
+        add_action('wp_ajax_nopriv_ascora_update_qty', [$this, 'update_quantity']);
+
+        // Ajax update cart count
+        add_action('wp_ajax_ascora_get_cart_count', [$this, 'get_cart_count']);
+        add_action('wp_ajax_nopriv_ascora_get_cart_count', [$this, 'get_cart_count']);
     }
 
     /**
-     * Renders the mini cart panel and icon.
+     * SHORTCODE OUTPUT (icon + drawer)
      */
-    public function render_mini_cart_shortcode()
+    public function render_icon_and_drawer()
     {
-        if (did_action('ascora_mini_cart_rendered')) {
-            return '';
-        }
-
         ob_start(); ?>
 
-<!-- Cart Icon Wrapper -->
-<div id="ascora-mini-cart-wrapper" class="ascora-mini-cart-wrapper">
-    <a href="<?php echo esc_url(wc_get_cart_url()); ?>"
-        class="ascora-cart-icon-toggle"
-        title="<?php esc_attr_e('View Cart', 'ascora'); ?>">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
-            <path d="M17 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM1 1h4l2.68 12.87a2 2 0 0 0 2 1.63h9.72a2 2 0 0 0 2-1.63L23 6H6"
-                fill="none" />
-            <path
-                d="M16 13c-1.11 0-2 .89-2 2a2 2 0 1 0 4 0c0-1.11-.89-2-2-2Zm-7.17-2h10.34l.79-3h-13.42l-.46-2H3V4h2.17l.66 3.19L3 14v2h2v-1h13.03l-1.42-3H9.17ZM6 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
-        </svg>
-        <span class="ascora-cart-count" id="ascora-cart-count-fragment">
-            <?php echo WC()->cart->get_cart_contents_count(); ?>
-        </span>
-    </a>
+<div id="ascora-cart-trigger" class="ascora-cart-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" width="20" height="20"
+        class="wc-block-mini-cart__icon" aria-hidden="true" focusable="false">
+        <circle cx="12.6667" cy="24.6667" r="2" fill="currentColor"></circle>
+        <circle cx="23.3333" cy="24.6667" r="2" fill="currentColor"></circle>
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M9.28491 10.0356C9.47481 9.80216 9.75971 9.66667 10.0606 9.66667H25.3333C25.6232 9.66667 25.8989 9.79247 26.0888 10.0115C26.2787 10.2305 26.3643 10.5211 26.3233 10.8081L24.99 20.1414C24.9196 20.6341 24.4977 21 24 21H12C11.5261 21 11.1173 20.6674 11.0209 20.2034L9.08153 10.8701C9.02031 10.5755 9.09501 10.269 9.28491 10.0356ZM11.2898 11.6667L12.8136 19H23.1327L24.1803 11.6667H11.2898Z"
+            fill="currentColor"></path>
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M5.66669 6.66667C5.66669 6.11438 6.1144 5.66667 6.66669 5.66667H9.33335C9.81664 5.66667 10.2308 6.01229 10.3172 6.48778L11.0445 10.4878C11.1433 11.0312 10.7829 11.5517 10.2395 11.6505C9.69614 11.7493 9.17555 11.3889 9.07676 10.8456L8.49878 7.66667H6.66669C6.1144 7.66667 5.66669 7.21895 5.66669 6.66667Z"
+            fill="currentColor"></path>
+    </svg> <span
+        class="ascora-cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
 </div>
 
-<!-- Slide-Out Mini Cart Panel -->
-<div id="ascora-mini-cart-panel" class="ascora-mini-cart-panel ascora-hidden">
-    <div class="panel-header">
-        <h3><?php _e('Cart', 'ascora'); ?>
-        </h3>
-        <button class="close-btn"
-            aria-label="<?php esc_attr_e('Close Cart', 'ascora'); ?>">&times;</button>
-    </div>
+<div id="ascora-slide-overlay"></div>
 
-    <div class="woocommerce-mini-cart-content-wrap">
-        <?php woocommerce_mini_cart(); ?>
-    </div>
-
-    <?php
-            $cart_is_empty   = WC()->cart->is_empty();
-        $footer_style        = $cart_is_empty ? 'display: none;' : '';
-        $empty_message_style = $cart_is_empty ? 'display: block;' : 'display: none;';
-        ?>
-    <p class="woocommerce-mini-cart__empty-message"
-        style="<?php echo $empty_message_style; ?>">
-        <?php _e('Your cart is currently empty.', 'ascora'); ?>
-    </p>
-
-    <div class="panel-footer" style="<?php echo $footer_style; ?>">
-        <p class="woocommerce-mini-cart__total total">
-            <strong><?php _e('Total:', 'ascora'); ?></strong>
-            <?php echo WC()->cart->get_cart_total(); ?>
-        </p>
-        <div class="buttons">
-            <a href="<?php echo esc_url(wc_get_cart_url()); ?>"
-                class="button view-cart-btn"><?php _e('View Cart', 'ascora'); ?></a>
-            <a href="<?php echo esc_url(wc_get_checkout_url()); ?>"
-                class="button checkout-btn"><?php _e('Checkout', 'ascora'); ?></a>
-        </div>
-    </div>
+<div id="ascora-slide-cart">
+    <button class="ascora-slide-close">×</button>
+    <div id="ascora-mini-cart-wrapper"></div>
 </div>
-
-<div id="ascora-mini-cart-overlay" class="ascora-mini-cart-overlay ascora-hidden"></div>
 
 <?php
-        do_action('ascora_mini_cart_rendered');
-
         return ob_get_clean();
     }
 
     /**
-     * AJAX fragment for mini-cart content.
-     * @param mixed $fragments
+     * Load mini cart AJAX
      */
-    public function mini_cart_fragment($fragments)
+    public function load_mini_cart()
+    {
+        wc_maybe_define_constant('WOOCOMMERCE_CART', true);
+        ob_clean();
+        echo $this->render_cart_html();
+        wp_die();
+    }
+
+    /**
+     * Remove from cart AJAX
+     */
+    public function remove_cart_item()
+    {
+        $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
+
+        WC()->cart->remove_cart_item($cart_item_key);
+        WC()->cart->calculate_totals();
+
+        echo $this->render_cart_html();
+        wp_die();
+    }
+
+    /**
+     * Update quantity (+ / –)
+     */
+    public function update_quantity()
+    {
+        $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
+        $change        = sanitize_text_field($_POST['change']);
+
+        $cart = WC()->cart->get_cart();
+
+        if (!isset($cart[$cart_item_key])) {
+            wp_die();
+        }
+
+        $qty = $cart[$cart_item_key]['quantity'];
+
+        if ($change === 'plus') {
+            $qty++;
+        } elseif ($change === 'minus') {
+            if ($qty > 1) {
+                $qty--;
+            } else {
+                WC()->cart->remove_cart_item($cart_item_key);
+            }
+        }
+
+        WC()->cart->set_quantity($cart_item_key, $qty, true);
+        WC()->cart->calculate_totals();
+
+        echo $this->render_cart_html();
+        wp_die();
+    }
+
+    /**
+     * Get cart count (header)
+     */
+    public function get_cart_count()
+    {
+        wp_send_json([
+            'count' => WC()->cart->get_cart_contents_count()
+        ]);
+    }
+
+    /**
+     * MINI CART TEMPLATE
+     */
+    public function render_cart_html()
     {
         ob_start();
-        woocommerce_mini_cart();
-        $fragments['.woocommerce-mini-cart-content-wrap'] = ob_get_clean();
 
-        return $fragments;
-    }
+        $cart  = WC()->cart;
+        $items = $cart->get_cart();
 
-    /**
-     * AJAX fragment for cart count.
-     * @param mixed $fragments
-     */
-    public function cart_count_fragment($fragments)
-    {
-        ob_start(); ?>
-<span class="ascora-cart-count" id="ascora-cart-count-fragment">
-    <?php echo WC()->cart->get_cart_contents_count(); ?>
-</span>
-<?php
-        $fragments['#ascora-cart-count-fragment'] = ob_get_clean();
+        include ASCORA_WC_PATH . 'core/ascora-mini-cart.php';
 
-        return $fragments;
-    }
-
-    /**
-     * Enqueue CSS and JS for mini cart.
-     */
-    public function enqueue_mini_cart_assets()
-    {
-        // Inline CSS
-        $css = file_get_contents(plugin_dir_path(__FILE__) . 'assets/ascora-mini-cart.css');
-        wp_register_style('ascora-mini-cart-style', false);
-        wp_enqueue_style('ascora-mini-cart-style');
-        wp_add_inline_style('ascora-mini-cart-style', $css);
-
-        // Inline JS
-        $js = file_get_contents(plugin_dir_path(__FILE__) . 'assets/ascora-mini-cart.js');
-        wp_register_script('ascora-mini-cart-script', false, ['jquery'], '1.0.1', true);
-        wp_enqueue_script('ascora-mini-cart-script');
-        wp_add_inline_script('ascora-mini-cart-script', $js);
+        return ob_get_clean();
     }
 }
 
-// Instantiate the mini cart
-new Ascora_Slide_Mini_Cart();
+new Ascora_Mini_Cart();
 ?>
