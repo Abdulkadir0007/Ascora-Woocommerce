@@ -53,50 +53,58 @@ if (!empty($brand)) {
 ?>
         </div>
         <?php
+
 if ($product->is_type('variable')) {
     $attributes = $product->get_variation_attributes();
 
     if (isset($attributes['pa_color'])) {
-        echo '<div class="ascora-color-variations">';
+        echo '<div class="ascora-shop-color-variations">';
 
         // All variation IDs
         $variations = $product->get_children();
 
         foreach ($attributes['pa_color'] as $color_slug) {
             $term = get_term_by('slug', $color_slug, 'pa_color');
-            if (!$term) {
+            if (! $term) {
                 continue;
             }
 
-            // Get Color HEX stored in term meta
+            // term color meta (hex)
             $color_code = get_term_meta($term->term_id, 'term_color_code', true);
-            if (!$color_code) {
+            if (! $color_code) {
                 $color_code = '#cccccc';
             }
 
-            // Default image fallback
-            $variation_image = '';
+            // default image fallback (product thumbnail)
+            $variation_image = wp_get_attachment_image_url($product->get_image_id(), 'woocommerce_thumbnail');
 
-            // Match variation by color attribute
+            $matched_variation_id = '';
+
             foreach ($variations as $variation_id) {
                 $variation = wc_get_product($variation_id);
-                $attrs     = $variation->get_attributes();
+                if (! $variation) {
+                    continue;
+                }
 
+                $attrs = $variation->get_attributes();
                 if (isset($attrs['pa_color']) && $attrs['pa_color'] === $color_slug) {
-                    $variation_image = wp_get_attachment_image_url(
-                        $variation->get_image_id(),
-                        'woocommerce_thumbnail'
-                    );
+                    $matched_variation_id = $variation_id;
 
+                    $var_img = $variation->get_image_id();
+                    if ($var_img) {
+                        $variation_image = wp_get_attachment_image_url($var_img, 'woocommerce_thumbnail');
+                    }
                     break;
                 }
             }
 
+
+            // Output dot with data attributes (include data-color, data-image, data-variation)
             echo '<span class="color-dot"
-                    data-image="' . esc_url($variation_image) . '"
-                    style="background-color:' . esc_attr($color_code) . ';"
-                    title="' . esc_attr($term->name) . '">
-                  </span>';
+    data-color="' . esc_attr($color_slug) . '"
+    data-variation="' . esc_attr($variation_id ?? '') . '"
+    data-image="' . esc_url($variation_image) . '"
+    style="background-color:' . esc_attr($color_code) . ';"></span>';
         }
 
         echo '</div>';

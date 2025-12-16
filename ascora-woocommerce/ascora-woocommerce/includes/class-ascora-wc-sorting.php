@@ -8,11 +8,13 @@ add_action('wp_ajax_nopriv_ascora_sort_products', 'ascora_sort_products');
 
 function ascora_sort_products()
 {
-    $sort = sanitize_text_field($_POST['sort'] ?? '');
+    global $ascora;
+    $sort            = sanitize_text_field($_POST['sort'] ?? '');
+    $post_per_Page   = class_exists('Ascora_Core') ? ($ascora['shop-page-post-per'] ?? 16) : 16;
 
     $args = [
         'post_type'      => 'product',
-        'posts_per_page' => 12,
+        'posts_per_page' => $post_per_Page,
     ];
 
     switch ($sort) {

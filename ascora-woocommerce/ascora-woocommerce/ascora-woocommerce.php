@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Plugin Name: Ascora WooCommerce
  * Plugin URI:  https://abkadir.com
  * Description: Cart, Checkout, My-Account, Single Product custom layouts & features for Ascora theme.
- * Version:     1.0.0
+ * Version:     1.2.0
  * Author:      Abdul Kadir
  * Author URI:  https://abkadir.com
  * Text Domain: ascora-wc
@@ -77,6 +77,8 @@ final class Ascora_WooCommerce
         require_once ASCORA_WC_PATH . 'core/ascora-wishlist.php';
         require_once ASCORA_WC_PATH . 'core/meta-attribute-terms.php';
         require_once ASCORA_WC_PATH . 'includes/class-ascora-wishlist.php';
+        require_once ASCORA_WC_PATH . 'core/ascora-filters/class-ascora-filter-ajax.php';
+        require_once ASCORA_WC_PATH . 'core/ascora-filters/class-ascora-price-filter.php';
     }
 
     /**
@@ -132,7 +134,6 @@ final class Ascora_WooCommerce
         if (!class_exists('WooCommerce')) {
             return;
         }
-
         // CSS Load
         if (file_exists(ASCORA_WC_PATH . 'assets/ascora-wc.css')) {
             wp_enqueue_style(
@@ -150,13 +151,13 @@ final class Ascora_WooCommerce
                 ASCORA_WC_VERSION
             );
         }
+
         // Swiper CSS
-        wp_enqueue_style('ascora-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css');
+        wp_enqueue_style('ascora-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css');
 
 
         // Swiper JS
-        wp_enqueue_script('ascora-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], null, true);
-
+        wp_enqueue_script('ascora-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], null, true);
 
         // JS Load + Localize
         if (file_exists(ASCORA_WC_PATH . 'assets/ascora-wc.js')) {
@@ -177,7 +178,14 @@ final class Ascora_WooCommerce
             wp_localize_script('ascora-wc', 'ascora_wishlist', [
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('ascora_wishlist_nonce'),
-    ]);
+            ]);
+            wp_localize_script('ascora-wc', 'ascora_ajax', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'per_page' => get_option('posts_per_page'),
+            ]);
+            wp_localize_script('ascora-wc', 'ascora_shop', [
+                'shop_url' => get_permalink(wc_get_page_id('shop')),
+]);
         }
     }
 
@@ -242,3 +250,12 @@ final class Ascora_WooCommerce
 
 // Initialize plugin
 Ascora_WooCommerce::instance();
+add_action('widgets_init', function () {
+    register_widget('Ascora_Price_Filter_Widget');
+});
+
+// add_action('wp_enqueue_scripts', function () {
+//     if (is_product() || is_shop() || is_product_category() || is_product_tag()) {
+//         wp_enqueue_script('ascora-color-variation', ASCORA_WC_URL . 'assets/ascora-color-variation.js', [], ASCORA_WC_VERSION, true);
+//     }
+// });

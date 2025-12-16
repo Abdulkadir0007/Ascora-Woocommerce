@@ -17,20 +17,23 @@ function ascora_wc_product_search_form()
         action="<?php echo home_url('/'); ?>">
         <div class="search-input-group">
             <div class="product_cat">
-                <select name="product_cat" id="product_cat">
-                    <option value="">
-                        <?php esc_html_e('All Categories', 'ascora'); ?>
-                    </option>
-                    <?php
+                <div class="ascora-select-wrap">
+                    <span class="ascora-selected">All Categories</span>
+                    <select name="product_cat" id="product_cat">
+                        <option value="">
+                            <?php esc_html_e('All Categories', 'ascora'); ?>
+                        </option>
+                        <?php
             $categories = get_terms([
                 'taxonomy'   => 'product_cat',
                 'hide_empty' => false,
-            ]);
+                ]);
     foreach ($categories as $category) {
         echo '<option value="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</option>';
     }
     ?>
-                </select>
+                    </select>
+                </div>
             </div>
             <label for="s"
                 class="screen-reader-text"><?php esc_html_e('Search products&hellip;', 'ascora'); ?></label>

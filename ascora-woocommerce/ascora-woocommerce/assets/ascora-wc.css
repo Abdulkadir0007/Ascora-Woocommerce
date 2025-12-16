@@ -2,11 +2,12 @@
 #as-wc-searchform .search-input-group {
     display: flex;
     margin: 10px 0;
-    background: #E6E6E6;
+    background: #ffffff;
     border-color: #E6E6E6;
     border: 2px solid #e6e6e6;
     align-items: stretch;
     transition: border-color .3s;
+    align-items: center;
 }
 
 #as-wc-searchform .screen-reader-text {
@@ -27,8 +28,10 @@
     outline: none;
 }
 
-#as-wc-searchform select#product_cat {
-    padding: 5px;
+#as-wc-searchform #product_cat option {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #as-wc-searchform .search-submit {
@@ -51,7 +54,7 @@
 
 #as-wc-searchform .product_cat {
     position: relative;
-    padding: 0 15px;
+    padding: 0 10px;
     background-color: #fff;
 }
 
@@ -67,6 +70,28 @@
     transform: translateY(-50%);
 }
 
+/* Woo Search */
+.ascora-select-wrap {
+    position: relative;
+    width: 150px;
+}
+
+.ascora-selected {
+    display: block;
+    padding: 8px 0;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* hide native arrow but keep select functional */
+.ascora-select-wrap select {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
 
 /* =========================================================
    ASCORA AJAX LIVE SEARCH – MERGED + CLEAN VERSION
@@ -263,6 +288,7 @@
 .mini-thumb img {
     width: 80px;
     border-radius: 6px;
+    height: auto;
 }
 
 .mini-content {
@@ -567,4 +593,72 @@
     right: 0;
     bottom: 0;
     background-color: #f7f7f7;
+}
+
+.ascora-wishlist-item.removing {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* parent must be relative */
+.ascora-wishlist-item {
+    position: relative;
+}
+
+.loading-gif.hidden {
+    display: none;
+}
+
+/* loading overlay / spinner */
+.ascora-wishlist-item .loading-gif {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-100%, -100%);
+    width: 24px;
+    /* চাইলে বড় করুন */
+    height: 24px;
+    z-index: 2;
+}
+
+/* Ascora Filter */
+/* Ascora Filter */
+
+
+
+/* Widgets */
+.ascora-price-widget {
+    margin: 15px 0;
+}
+
+.ascora-price-slider-widgets-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    align-items: center;
+}
+
+.ascora-button.widgets-button {
+    margin-top: 0;
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.ascora-price-widget .ui-slider-horizontal .ui-slider-handle {
+    top: -.4em;
+}
+
+.ascora-price-widget .ui-slider-horizontal {
+    height: .3em;
+    margin-top: 10px;
+}
+
+.ascora-price-widget .ui-slider .ui-slider-handle {
+    width: .9em;
+    height: .9em;
+}
+
+.widget-title {
+    font-size: 16px;
 }

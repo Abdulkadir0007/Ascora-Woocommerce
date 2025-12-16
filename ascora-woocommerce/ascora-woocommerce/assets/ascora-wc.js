@@ -1,12 +1,22 @@
 /**
- * ascora-main.js
- * Full clean, single compiled JS for Ascora theme interactions
- * Requires: jQuery, Swiper (optional), (zoom plugin optional)
+ * ASCORA MAIN JS (Optimized / Clean / Conflict-Free)
+ * Requires: jQuery, Swiper, WooCommerce ajax
  */
+
+
+
+
+
+
 jQuery(function ($) {
 
-    // ADD / REMOVE (shop + single + wishlist page)
+    /* -----------------------------------------------------
+     *  WISHLIST TOGGLE + REMOVE
+     * ----------------------------------------------------- */
     $(document).on("click", ".ascora-wl-btn, .wishlist-icon", function (e) {
+
+        if ($(e.target).closest(".wl-remove").length) return;
+
         e.preventDefault();
 
         let $btn = $(this);
@@ -16,112 +26,59 @@ jQuery(function ($) {
             action: "ascora_wishlist_toggle",
             product_id: pid
         }, function (res) {
-            if (!res || !res.success) return;
 
-            // toggle heart
+            if (!res?.success) return;
+
             $btn.toggleClass("active");
-            $btn.find("i").toggleClass("fa-heart fa-heart-o");
+            $btn.find("i").toggleClass("fa-heart fa-heart");
 
-            // update counter
-            $(".wishlist-count, .ascora-wishlist-icon .count")
-                .text(res.data.count);
+            $(".wishlist-count, .ascora-wishlist-icon .count").text(res.data.count);
 
-            // Remove immediately on wishlist page
             if ($("body").hasClass("wishlist-page")) {
                 $(".ascora-wishlist-item[data-id='" + pid + "']")
                     .fadeOut(250, function () {
                         $(this).remove();
 
-                        if (!$(".ascora-wishlist-item").length) {
-                            location.reload();
-                        }
+                        if (!$(".ascora-wishlist-item").length) location.reload();
                     });
             }
         });
     });
 
+$(document).on("click", ".wl-remove", function (e) {
+    e.preventDefault();
 
+    const $btn   = $(this);
+    const $item  = $btn.closest(".ascora-wishlist-item");
+    const pid    = $btn.data("id");
 
-});
+    // ইতিমধ্যে removing হলে রিটার্ন
+    if ($item.hasClass("removing")) return;
 
-jQuery(function($){
+    $item.addClass('removing')
+            .find('.loading-gif')
+            .removeClass('hidden');           // visual flag
+    $btn.prop("disabled", true);         // দ্বিতীয় ক্লিক ব্লক
 
-    $(document).on("click", ".qty-plus", function () {
-        let input = $(this).closest(".quantity").find(".qty");
-        let val = parseInt(input.val()) || 1;
-        let max = parseInt(input.attr("max")) || 9999;
-
-        if (val < max) {
-            input.val(val + 1).trigger("change");
+    $.post(ascora_ajax.ajax_url, {
+        action: "ascora_wishlist_toggle",
+        product_id: pid
+    }, function (res) {
+        if (!res?.success) {
+            $item.removeClass("removing");
+            $btn.prop("disabled", false);
+            return;
         }
-    });
 
-    $(document).on("click", ".qty-minus", function () {
-        let input = $(this).closest(".quantity").find(".qty");
-        let val = parseInt(input.val()) || 1;
-        let min = parseInt(input.attr("min")) || 1;
-
-        if (val > min) {
-            input.val(val - 1).trigger("change");
-        }
-    });
-
-});
-
-jQuery(document).ready(function ($) {
-
-    // Quick View Color Change Image
-    $(document).on("click", ".ascora-color-variations .color-dot", function () {
-
-        let newImage = $(this).data("image");
-
-        if (!newImage) return;
-
-        // Update first image of swiper
-        let mainSlide = $(".qv-swiper .swiper-slide").first();
-
-        mainSlide.find("img").attr("src", newImage);
-        mainSlide.find("img").attr("srcset", newImage);
-
-        // Make active dot
-        $(this).addClass("active").siblings().removeClass("active");
-    });
-
-});
-jQuery(function($) {
-
-    $(document).on("click", ".qv-add-to-cart", function (e) {
-        e.preventDefault();
-
-        let pid = $(this).data("product-id");
-        let qty = $(this).closest(".cart").find("input.qty").val() || 1;
-
-        $.ajax({
-            type: "POST",
-            url: wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%", "add_to_cart"),
-            data: {
-                product_id: pid,
-                quantity: qty,
-            },
-            success: function (res) {
-                if (!res || !res.fragments) return;
-
-                // Update header cart fragments
-                $.each(res.fragments, function (key, value) {
-                    $(key).replaceWith(value);
-                });
-
-                // Optional success message
-                $(".qv-add-to-cart").text("Added ✓").addClass("added");
-
-            }
+        $item.fadeOut(250, function () {
+            $(this).remove();
+            $(".wishlist-count, .ascora-wishlist-icon .count").text(res.data.count);
+            if (!$(".ascora-wishlist-item").length) location.reload();
         });
-
     });
-
 });
 
-
+});
 (function ($) {
     'use strict';
 
@@ -140,24 +97,48 @@ jQuery(function($) {
         if (window.console && console.log) console.log.apply(console, arguments);
     }
 
-    function ensureQtyButtons(context) {
-        context = context || document;
-        $(context).find('form.cart, form.variations_form').each(function () {
-            var $form = $(this);
-            var $qty = $form.find('input.qty').first();
-            if (!$qty.length) return;
+        function ensureQtyButtons(context) {
+            context = context || document;
 
-            if ($qty.closest('.asp-qty-wrapper').length) return; // already wrapped
+            $(context).find('form.cart, form.variations_form').each(function () {
+                const $form = $(this);
+                const $qty = $form.find('input.qty').first();
 
-            var $wrapper = $('<div class="asp-qty-wrapper"></div>');
-            var $minus = $('<button type="button" class="qty-btn qty-minus" aria-label="Decrease quantity">-</button>');
-            var $plus = $('<button type="button" class="qty-btn qty-plus" aria-label="Increase quantity">+</button>');
+                if (!$qty.length) return;
+                if ($qty.parent().hasClass('asp-qty-wrapper')) return; // already wrapped
 
-            $qty.wrap($wrapper);
-            $qty.before($minus);
-            $qty.after($plus);
-        });
+                const $wrapper = $('<div class="asp-qty-wrapper"></div>');
+                const $minus = $('<button type="button" class="qty-btn qty-minus" aria-label="Decrease quantity">-</button>');
+                const $plus  = $('<button type="button" class="qty-btn qty-plus" aria-label="Increase quantity">+</button>');
+
+                $qty.wrap($wrapper);
+                $qty.before($minus);
+                $qty.after($plus);
+            });
+        }
+        jQuery(function($){
+    ensureQtyButtons(); // init on page load
+
+    // If product loaded via AJAX (Quick View / variable product reload)
+    $(document).on('woocommerce_update_variation_values', function(e, $form) {
+        ensureQtyButtons($form);
+    });
+});
+$(document).on('click', '.qty-btn', function() {
+    const $btn = $(this);
+    const $input = $btn.siblings('input.qty');
+    let val = parseInt($input.val()) || 0;
+
+    if ($btn.hasClass('qty-plus')) {
+        val++;
+    } else if ($btn.hasClass('qty-minus')) {
+        val = Math.max(val - 1, 1); // minimum 1
     }
+
+    $input.val(val).trigger('change');
+});
+
+
 
     function initGallerySwiper() {
         if (typeof Swiper === 'undefined') return;
@@ -334,13 +315,54 @@ jQuery(function($) {
             $(document).trigger('ascora:compare', [pid]);
         });
 
-        $(document).on('click', '.ascora-card .wishlist-icon', function (e) {
-            e.preventDefault();
-            var $btn = $(this);
-            var id = $btn.data('id');
-            $btn.toggleClass('active');
-            $(document).trigger('ascora:wishlist:toggle', [id, $btn.hasClass('active')]);
-        });
+
+
+        // ---------- COLOR DOT CLICK (Loop + Single Product) ----------
+
+jQuery(function ($) {
+
+    function updateLoopImage($dot, imgUrl) {
+        // Find the shared ancestor
+        const $media = $dot.closest('.product-media');
+
+        // Primary image
+        const $imgMain = $media.find('.product-img-main img').first();
+
+        // Optional: secondary hover image
+        const $imgHover = $media.find('.product-img-hover img').first();
+
+        if ($imgMain.length && imgUrl) {
+            $imgMain.attr('src', imgUrl).removeAttr('srcset');
+        } else {
+            console.warn('Primary image not found!', $media);
+        }
+
+        if ($imgHover.length && imgUrl) {
+            $imgHover.attr('src', imgUrl).removeAttr('srcset');
+        }
+    }
+
+
+
+// CLICK
+$(document).on('click', '.ascora-shop-color-variations .color-dot', function (e) {
+    e.preventDefault();
+
+    const $dot = $(this);
+    const image = $dot.data('image');
+
+    $dot.addClass('active').siblings().removeClass('active');
+    updateLoopImage($dot, image);
+});
+
+// HOVER preview
+$(document).on('mouseenter', '.ascora-shop-color-variations .color-dot', function () {
+    updateLoopImage($(this), $(this).data('image'));
+});
+
+       
+
+
 
         // ---------- Color-dot (loop + single) ----------
         $(document).on('click', '.ascora-color-variations .color-dot', function (e) {
@@ -370,7 +392,50 @@ jQuery(function($) {
             var image = $(this).data('image') || '';
             if (image) $('.woocommerce-product-gallery__image img, .asp-main-img').first().attr('src', image);
         });
+
+    });
+       
+}
+
+
+function updateQVImage($dot, imgUrl) {
+    // Find the closest Quick View wrapper
+    const $qvWrapper = $dot.closest('.ascora-qv-wrapper');
+
+    // Main Swiper slide (primary image)
+    const $mainSlide = $qvWrapper.find('.qv-swiper .swiper-slide.qv-gallery-item').first();
+    const $mainImg = $mainSlide.find('img').first();
+
+    if ($mainImg.length && imgUrl) {
+        $mainImg.attr('src', imgUrl).removeAttr('srcset');
+    } else {
+        console.warn('QV main image not found!', $qvWrapper);
     }
+
+    // Optional: update all Swiper slides to match the selected color
+    // Uncomment if you want every slide to change
+    /*
+    $qvWrapper.find('.qv-swiper .swiper-slide.qv-gallery-item img').each(function () {
+        $(this).attr('src', imgUrl).removeAttr('srcset');
+    });
+    */
+}
+// CLICK on color dot in Quick View
+$(document).on('click', '.ascora-qv-wrapper .ascora-shop-color-variations .color-dot', function (e) {
+    e.preventDefault();
+
+    const $dot = $(this);
+    const image = $dot.data('image');
+
+    $dot.addClass('active').siblings().removeClass('active');
+    updateQVImage($dot, image);
+});
+
+// HOVER preview
+$(document).on('mouseenter', '.ascora-qv-wrapper .ascora-shop-color-variations .color-dot', function () {
+    updateQVImage($(this), $(this).data('image'));
+});
+
 
     // ---------- AJAX helpers ----------
     function refreshMiniCart() {
@@ -458,18 +523,237 @@ jQuery(function($) {
 
 })(jQuery);
 
-// Trigger Swiper init after Quick View content loaded
-jQuery(document).on('ascora_qv_loaded', function(){
-    var qvSwiper = new Swiper('.ascora-qv-wrapper .qv-swiper', {
-        slidesPerView: 1,
-        loop: true,
-        navigation: {
-            nextEl: '.qv-swiper-button-next',
-            prevEl: '.qv-swiper-button-prev',
-        },
-        pagination: {
-            el: '.qv-swiper-pagination',
-            clickable: true,
-        },
+
+
+/* ------------------------------------------------------------------
+ * Quick-View Swiper – একবারই, DOM ঢোকার পর
+ * ------------------------------------------------------------------ */
+jQuery(document).on('ascora_qv_loaded', function () {
+    const $slider = jQuery('.qv-swiper');
+    if (!$slider.length) return;
+
+    $slider.each(function () {
+        new Swiper(this, {
+            slidesPerView : 1,
+            loop          : true,
+            navigation    : {
+                nextEl : '.qv-swiper-button-next',
+                prevEl : '.qv-swiper-button-prev',
+            },
+            pagination    : {
+                el        : '.qv-swiper-pagination',
+                clickable : true,
+            },
+            autoplay      : false,
+        });
+    });
+});
+
+
+// Ascora Filter
+// Ascora Filter + AJAX Pagination
+jQuery(function ($) {
+
+    let isFiltering = false;
+    const shopBaseUrl = ascora_shop.shop_url.endsWith('/')
+    ? ascora_shop.shop_url
+    : ascora_shop.shop_url + '/';
+
+
+    /* -------------------------
+     * UPDATE URL (FILTER / NORMAL)
+     * ------------------------- */
+    function updateURL(page = 1) {
+
+        if (isFiltering) {
+            let min = $('#ascora-price-min').val() || 0;
+            let max = $('#ascora-price-max').val() || 0;
+        // 🔥 always start from CLEAN shop base URL
+    let baseUrl = ascora_shop.shop_url;
+    let url = new URL(baseUrl);
+            url.searchParams.set('min_price', min);
+            url.searchParams.set('max_price', max);
+            url.searchParams.set('paged', page);
+
+            window.history.pushState({}, '', url);
+
+        } else {
+            let cleanUrl = page > 1
+                ? shopBaseUrl + 'page/' + page + '/'
+                : shopBaseUrl;
+
+            window.history.pushState({}, '', cleanUrl);
+        }
+    }
+
+    /* -------------------------
+     * LOAD PRODUCTS (AJAX)
+     * ------------------------- */
+    function loadProducts(page = 1) {
+
+        let min = $('#ascora-price-min').val() || 0;
+        let max = $('#ascora-price-max').val() || 0;
+
+        $('#ascora-products').addClass('loading');
+
+        $.post(ascora_ajax.ajax_url, {
+            action: 'ascora_filter_price',
+            min_price: min,
+            max_price: max,
+            paged: page
+        }, function (res) {
+
+            $('#ascora-products').removeClass('loading');
+
+            if (res.success) {
+                $('#ascora-products').html(res.data.products);
+                $('#ascora-pagination').html(res.data.pagination);
+
+                updateURL(page);
+            }
+        });
+    }
+
+    /* -------------------------
+     * PRICE SLIDER INIT (SAFE)
+     * ------------------------- */
+    function initPriceSlider() {
+
+        let $slider = $('#ascora-price-slider');
+        if (!$slider.length) return;
+
+        if ($slider.hasClass('ui-slider')) return;
+
+        let min = parseInt($('#ascora-price-min').val()) || 0;
+        let max = parseInt($('#ascora-price-max').val()) || 0;
+
+        $slider.slider({
+            range: true,
+            min: 0,
+            max: max,
+            values: [min, max],
+            slide: function (event, ui) {
+
+                $('#ascora-price-min').val(ui.values[0]);
+                $('#ascora-price-max').val(ui.values[1]);
+
+                $('#ascora-price-min-val').text('$ ' +ui.values[0]);
+                $('#ascora-price-max-val').text('$ '+ui.values[1]);
+            }
+        });
+    }
+
+    /* -------------------------
+     * APPLY FILTER
+     * ------------------------- */
+    $(document).on('click', '#ascora-price-apply', function (e) {
+        e.preventDefault();
+        isFiltering = true;
+         $("#ascora-filter-reset").fadeIn(150); // 👈 reset show
+        loadProducts(1);
+    });
+
+    /* -------------------------
+     * AJAX PAGINATION (HARD STOP)
+     * ------------------------- */
+    $('body').on(
+        'click',
+        '.woocommerce-pagination a, #ascora-pagination a',
+        function (e) {
+
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+
+            let href = this.getAttribute('href');
+            let page = 1;
+
+            if (href && href.includes('paged=')) {
+                page = href.split('paged=')[1];
+            } else if (href && href.match(/page\/(\d+)/)) {
+                page = href.match(/page\/(\d+)/)[1];
+            }
+
+            loadProducts(page);
+
+            return false; // 🔥 IMPORTANT
+        }
+    );
+
+    /* -------------------------
+     * READ FILTER FROM URL (ON LOAD)
+     * ------------------------- */
+    function getUrlParam(name) {
+        return new URLSearchParams(window.location.search).get(name);
+    }
+
+    let minFromUrl = getUrlParam('min_price');
+    let maxFromUrl = getUrlParam('max_price');
+
+    if (minFromUrl !== null && maxFromUrl !== null) {
+        $('#ascora-price-min').val(minFromUrl);
+        $('#ascora-price-max').val(maxFromUrl);
+        isFiltering = true;
+    }
+
+    initPriceSlider();
+
+
+
+
+
+// Filter reset Button
+// RESET FILTER
+$(document).on("click", "#ascora-filter-reset", function (e) {
+    e.preventDefault();
+
+    isFiltering = false;
+
+    let minDefault = parseInt($("#ascora-price-min").attr("min")) || 0;
+    let maxDefault = parseInt($("#ascora-price-max").attr("max")) || 0;
+
+    // reset input values
+    $("#ascora-price-min").val(minDefault);
+    $("#ascora-price-max").val(maxDefault);
+
+    $("#ascora-price-min-val").text(minDefault);
+    $("#ascora-price-max-val").text(maxDefault);
+
+    // reset slider
+    if ($("#ascora-price-slider").hasClass("ui-slider")) {
+        $("#ascora-price-slider").slider("values", [minDefault, maxDefault]);
+    }
+
+    $("#ascora-products").addClass("loading");
+
+    $.post(ascora_ajax.ajax_url, {
+        action: "ascora_filter_price",
+        min_price: minDefault,
+        max_price: maxDefault,
+        paged: 1
+    }, function (res) {
+
+        $("#ascora-products").removeClass("loading");
+
+        if (res.success) {
+            $("#ascora-products").html(res.data.products);
+            $("#ascora-pagination").html(res.data.pagination);
+        }
+
+        // 🔥 CLEAN URL (remove /page/x/ + params)
+        let cleanUrl = ascora_shop.shop_url;
+        window.history.pushState({}, "", cleanUrl);
+
+        // hide reset button
+        $("#ascora-filter-reset").fadeOut(150);
+    });
+});
+});
+
+
+jQuery(function ($) {
+    $('#product_cat').on('change', function () {
+        let text = $(this).find('option:selected').text();
+        $('.ascora-selected').text(text);
     });
 });

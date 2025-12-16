@@ -40,8 +40,11 @@ $list    = get_transient($key) ?: [];
 
         <li class="ascora-wishlist-item"
             data-id="<?php echo esc_attr($product_id); ?>">
-
             <div class="wl-card">
+                <div class="loading-gif hidden">
+                    <img src="<?php echo get_theme_file_uri('assets/images/rhombus.gif'); ?>"
+                        alt="loading">
+                </div>
 
                 <a href="<?php echo get_permalink($product_id); ?>"
                     class="wl-thumb">
@@ -68,11 +71,6 @@ $list    = get_transient($key) ?: [];
                             data-product-id="<?php echo esc_attr($product_id); ?>">
                             <?php echo esc_html($product->add_to_cart_text()); ?>
                         </a>
-
-                        <button class="ascora-btn wl-remove"
-                            data-id="<?php echo esc_attr($product_id); ?>">
-                            <i class="fa fa-trash"></i>
-                        </button>
                         <button class="ascora-btn wl-remove"
                             data-id="<?php echo esc_attr($product_id); ?>">
                             <i class="fa fa-trash"></i>
@@ -92,22 +90,3 @@ $list    = get_transient($key) ?: [];
     <?php endif; ?>
 
 </div>
-
-<script>
-    jQuery(function($) {
-
-        $(document).on('click', '.wl-remove', function() {
-            let id = $(this).data('id');
-
-            $.post(ajaxurl, {
-                action: 'ascora_wishlist_toggle',
-                product_id: id
-            }, function(res) {
-                if (res.success) {
-                    location.reload();
-                }
-            });
-        });
-
-    });
-</script>
