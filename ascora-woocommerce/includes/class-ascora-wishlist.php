@@ -3,6 +3,12 @@
 // Class Ascorra Wishlist
 declare(strict_types=1);
 defined('ABSPATH') || exit;
+function ascora_clean_wishlist(array $list): array
+{
+    return array_values(array_filter($list, function ($product_id) {
+        return get_post_status($product_id) === 'publish';
+    }));
+}
 
 // AJAX Handlers
 add_action('wp_ajax_ascora_wishlist_toggle', 'ascora_wishlist_toggle');
@@ -16,6 +22,9 @@ function ascora_wishlist_toggle()
 
     $list = get_transient($key) ?: [];
 
+    // 🔥 CLEAN deleted products
+    $list = ascora_clean_wishlist($list);
+
     if (in_array($product_id, $list)) {
         $list   = array_diff($list, [$product_id]);
         $status = 'removed';
@@ -24,13 +33,16 @@ function ascora_wishlist_toggle()
         $status = 'added';
     }
 
-    set_transient($key, array_values($list), DAY_IN_SECONDS * 30);
+    $list = array_values($list);
+
+    set_transient($key, $list, DAY_IN_SECONDS * 30);
 
     wp_send_json_success([
         'status' => $status,
         'count'  => count($list),
     ]);
 }
+
 
 // Guest ID
 function ascora_get_guest_id()

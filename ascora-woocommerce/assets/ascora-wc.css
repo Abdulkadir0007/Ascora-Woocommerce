@@ -73,7 +73,7 @@
 /* Woo Search */
 .ascora-select-wrap {
     position: relative;
-    width: 150px;
+    max-width: 150px;
 }
 
 .ascora-selected {
@@ -614,7 +614,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-100%, -100%);
+    transform: translate(-150%, -150%);
     width: 24px;
     /* চাইলে বড় করুন */
     height: 24px;

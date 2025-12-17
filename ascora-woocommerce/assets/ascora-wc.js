@@ -650,6 +650,10 @@ jQuery(function ($) {
         e.preventDefault();
         isFiltering = true;
          $("#ascora-filter-reset").fadeIn(150); // 👈 reset show
+          // 👇 smooth scroll to #ascora-products top
+    $('html, body').animate({
+        scrollTop: $('#ascora-products').offset().top
+    }, 600);
         loadProducts(1);
     });
 

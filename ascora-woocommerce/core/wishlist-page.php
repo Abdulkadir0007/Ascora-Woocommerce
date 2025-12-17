@@ -4,8 +4,9 @@ defined('ABSPATH') || exit;
 
 $user_id = get_current_user_id();
 $key     = $user_id ? "user_$user_id" : 'guest_' . ascora_get_guest_id();
-$list    = get_transient($key) ?: [];
 
+$list = get_transient($key) ?: [];
+$list = ascora_clean_wishlist($list);
 ?>
 
 <div class="ascora-wishlist-wrapper">
