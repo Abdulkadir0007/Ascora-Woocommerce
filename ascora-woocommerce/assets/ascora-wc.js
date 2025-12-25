@@ -761,3 +761,24 @@ jQuery(function ($) {
         $('.ascora-selected').text(text);
     });
 });
+
+
+(function($){
+  $(document).ready(function(){
+    $('.ascora-woo-header .main-menu').hcOffcanvasNav({
+        disableAt: 99999,
+        insertBack: true,
+        labelClose: 'Close',
+        labelBack: 'Back',
+         levelOpen:'expand',
+        levelTitleAsBack: true
+    });
+  });
+})(jQuery);
+
+jQuery(function($){
+    $('.ascora-cat-list > li').hover(
+        function(){ $(this).addClass('open'); },
+        function(){ $(this).removeClass('open'); }
+    );
+});

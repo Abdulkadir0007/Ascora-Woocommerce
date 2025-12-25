@@ -96,3 +96,36 @@ jQuery(function ($) {
     });
 
 });
+
+
+
+jQuery(function($){
+    let frame;
+
+    $(document).on('click', '.ascora-upload', function(e){
+        e.preventDefault();
+
+        let button = $(this);
+        let input  = button.prev('input');
+        let preview = button.next('.ascora-preview');
+
+        if (frame) {
+            frame.open();
+            return;
+        }
+
+        frame = wp.media({
+            title: 'Select Image',
+            button: { text: 'Use Image' },
+            multiple: false
+        });
+
+        frame.on('select', function () {
+            let attachment = frame.state().get('selection').first().toJSON();
+            input.val(attachment.id);
+            preview.html('<img src="'+attachment.url+'" style="max-width:80px;">');
+        });
+
+        frame.open();
+    });
+});
