@@ -13,8 +13,15 @@
         ]);
 
         foreach ($main_cats as $cat) :
+
+            $sub_cats = get_terms([
+                           'taxonomy'   => 'product_cat',
+                           'parent'     => $cat->term_id,
+                           'hide_empty' => true,
+            ]);
             ?>
-        <div class="mega-item">
+        <div
+            class="mega-item <?php echo !empty($sub_cats) ? 'has-subcat' : ''; ?>">
 
             <a href="<?php echo get_term_link($cat); ?>">
                 <div class="mega-item-icon">
@@ -28,16 +35,19 @@
                 <?php echo esc_html($cat->name); ?>
             </a>
             <?php
-$sub_cats = get_terms([
-               'taxonomy'   => 'product_cat',
-               'parent'     => $cat->term_id,
-               'hide_empty' => true,
-]);
 
             if ($sub_cats) :
                 ?>
             <div class="mega-sub">
-                <?php foreach ($sub_cats as $sub) : ?>
+                <?php foreach ($sub_cats as $sub) :
+                    // 🔹 Get child categories of this sub-category
+                    $child_terms = get_terms([
+                        'taxonomy'   => 'product_cat',
+                        'parent'     => $sub->term_id,
+                        'hide_empty' => false,
+                    ]);
+
+                    ?>
                 <div class="sub-item">
 
                     <?php
@@ -56,12 +66,6 @@ $sub_cats = get_terms([
                         <span><?php echo esc_html($sub->name); ?></span>
                     </a>
                     <?php
-    // 🔹 Get child categories of this sub-category
-    $child_terms = get_terms([
-        'taxonomy'   => 'product_cat',
-        'parent'     => $sub->term_id,
-        'hide_empty' => false,
-    ]);
 
                     if (! empty($child_terms) && ! is_wp_error($child_terms)) :
                         ?>

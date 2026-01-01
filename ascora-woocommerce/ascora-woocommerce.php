@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Plugin Name: Ascora WooCommerce
  * Plugin URI:  https://abkadir.com
  * Description: Cart, Checkout, My-Account, Single Product custom layouts & features for Ascora theme.
- * Version:     1.3.1
+ * Version:     1.3.4
  * Author:      Abdul Kadir
  * Author URI:  https://abkadir.com
  * Text Domain: ascora-wc
@@ -155,14 +155,6 @@ final class Ascora_WooCommerce
                 ASCORA_WC_VERSION
             );
         }
-
-        // Swiper CSS
-        wp_enqueue_style('ascora-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css');
-
-
-        // Swiper JS
-        wp_enqueue_script('ascora-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], null, true);
-
         // JS Load + Localize
         if (file_exists(ASCORA_WC_PATH . 'assets/ascora-wc.js')) {
             wp_enqueue_script(

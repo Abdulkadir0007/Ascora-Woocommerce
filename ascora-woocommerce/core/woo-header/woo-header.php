@@ -74,11 +74,11 @@ if (! function_exists('ascora_woocommerce_header')) {
             </div>
 
         </div>
-        <div class="ascora-woocommerce-menu-center">
+
+        <div class="ascora-woocommerce-menu-center  ascora-main-menu">
+            <!-- Mobile Toggle -->
             <div class="ascora-mega-category-menu">
                 <?php  require_once ASCORA_WC_PATH . 'templates/mega-category-menu.php'?>
-
-
             </div>
             <div class="header-menu">
                 <nav class="main-menu right">
@@ -91,24 +91,61 @@ if (! function_exists('ascora_woocommerce_header')) {
             </div>
         </div>
     </div>
-    <div class="ascora-woocommerce-menu">
-        <div class="ascora-woo-all-menu">
-            <div class="ascora-woo-category-menu">
-
-            </div>
-        </div>
-    </div>
     <div class="ascora-responsive-woo-header">
         <div class="ascora-row">
-            <div class="header-menu ascora-woo-header">
-                <nav class="main-menu right">
-                    <?php wp_nav_menu([
-                        'theme_location' => 'main-menu',
-                        'container'      => false,
-                        'fallback_cb'    => 'default_menu'
-                        ]) ?>
-                </nav>
+            <a class="mobile-toggle" href="">
+                <i class="fa-solid fa-bars" aria-label="Open menu"></i>
+            </a>
+            <div class="ascora-mobile-drawer">
+                <!-- Header -->
+                <div class="ascora-mobile-header">
+                    <span class="mobile-title">Mobaile Menu</span>
+                    <a class="ascora-mobile-close">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                </div>
+                <!-- Search -->
+                <div class="search-ascora-mobile">
+                    <form
+                        action="<?php echo esc_url(home_url('/')); ?>"
+                        method="get">
+                        <div class="search-container">
+                            <input type="search" required name="s" id="mobile-search-input" placeholder="Search..." />
+                            <!-- Submit -->
+                            <button type="submit" class="search-submit">
+                                <span class="dashicons dashicons-search"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabs -->
+                <div class="ascora-mobile-tabs">
+                    <button class="tab-btn active" data-target="main-menu">Main Menu</button>
+                    <button class="tab-btn" data-target="category-menu">Categories</button>
+                </div>
+                <!-- Content -->
+                <div class="ascora-mobile-content">
+                    <div class="mobile-tab-content active" id="main-menu">
+                        <nav class="ascora-mobile-menu">
+                            <?php
+                            wp_nav_menu([
+                                'theme_location' => 'main-menu',
+                                'container'      => false,
+                                'menu_class'     => 'ascora-mobile-menu-list'
+                            ]);
+        ?>
+                        </nav>
+                    </div>
+
+                    <!-- Category Menu -->
+                    <div class="mobile-tab-content" id="category-menu">
+                        <?php require_once ASCORA_WC_PATH . 'templates/mega-category-menu-mobile.php'; ?>
+                    </div>
+                </div>
             </div>
+            <div class="ascora-mobile-overlay"></div>
+
             <div class="logo-img text-center">
                 <?php if (!empty($ascora['logo-img']['url'])): ?>
                 <a href="<?php echo home_url(); ?>"
