@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Plugin Name: Ascora WooCommerce
  * Plugin URI:  https://abkadir.com
  * Description: Cart, Checkout, My-Account, Single Product custom layouts & features for Ascora theme.
- * Version:     1.3.4
+ * Version:     2.0.0
  * Author:      Abdul Kadir
  * Author URI:  https://abkadir.com
  * Text Domain: ascora-wc
@@ -69,15 +69,15 @@ final class Ascora_WooCommerce
     private function includes(): void
     {
         // অন্যান্য ফাইল
+        require_once ASCORA_WC_PATH . 'core/con-woo-shop.php';
+        require_once ASCORA_WC_PATH . 'includes/ajax-shop.php';
         require_once ASCORA_WC_PATH . 'includes/class-mini-cart.php';
         require_once ASCORA_WC_PATH . 'includes/ajax-search-form.php';
         require_once ASCORA_WC_PATH . 'includes/class-quickc-view.php';
-        require_once ASCORA_WC_PATH . 'includes/class-ascora-wc-sorting.php';
         require_once ASCORA_WC_PATH . 'core/meta-attribute-terms.php';
         require_once ASCORA_WC_PATH . 'core/ascora-ajax-search.php';
         require_once ASCORA_WC_PATH . 'core/ascora-wishlist.php';
         require_once ASCORA_WC_PATH . 'includes/class-ascora-wishlist.php';
-        require_once ASCORA_WC_PATH . 'core/ascora-filters/class-ascora-filter-ajax.php';
         require_once ASCORA_WC_PATH . 'core/ascora-filters/class-ascora-price-filter.php';
         require_once ASCORA_WC_PATH . 'core/ascora-wc-pr-taxonomy/taxonomy-metabox.php';
         require_once ASCORA_WC_PATH . 'core/ascora-wc-pr-taxonomy/taxonomy-metabox-style.php';
@@ -155,6 +155,7 @@ final class Ascora_WooCommerce
                 ASCORA_WC_VERSION
             );
         }
+        wp_enqueue_script('script', ASCORA_WC_URL . 'assets/script.js', '', ASCORA_WC_VERSION, true);
         // JS Load + Localize
         if (file_exists(ASCORA_WC_PATH . 'assets/ascora-wc.js')) {
             wp_enqueue_script(

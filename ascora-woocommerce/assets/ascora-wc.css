@@ -74,6 +74,7 @@
 .ascora-select-wrap {
     position: relative;
     max-width: 150px;
+    min-width: 95px;
 }
 
 .ascora-selected {
@@ -646,13 +647,15 @@
     font-weight: 400;
 }
 
-.ascora-price-widget .ui-slider-horizontal .ui-slider-handle {
-    top: -.4em;
+/* Widgets Slider */
+.ascora-price-widget h3 {
+    font-size: 1em;
+    margin-bottom: 10px;
 }
 
-.ascora-price-widget .ui-slider-horizontal {
-    height: .3em;
-    margin-top: 10px;
+.ascora-price-widget .ui-slider-horizontal .ui-slider-handle {
+    top: -.3em;
+    background: #fff;
 }
 
 .ascora-price-widget .ui-slider .ui-slider-handle {
@@ -660,11 +663,15 @@
     height: .9em;
 }
 
-.widget-title {
-    font-size: 16px;
+.ui-slider-horizontal {
+    /* top: 0.3em !important; */
+    background: #cfc5c5;
+    height: 0.4em !important;
 }
 
-
+.ui-slider-horizontal .ui-slider-range {
+    background-color: #34b9c8;
+}
 
 /* Category Mega Menu */
 /* Category Mega Menu */

@@ -39,3 +39,4 @@ function ascora_wc_sticky_cart()
 </div>
 <?php
 }
+?>
