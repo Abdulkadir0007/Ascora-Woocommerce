@@ -44,6 +44,12 @@ add_action('init', function () {
         'woocommerce_result_count',
         20
     );
+    // Remove WooCommerce breadcrumbs
+    remove_action(
+        'woocommerce_before_main_content',
+        'woocommerce_breadcrumb',
+        20
+    );
 });
 
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Plugin Name: Ascora WooCommerce
  * Plugin URI:  https://abkadir.com
  * Description: Cart, Checkout, My-Account, Single Product custom layouts & features for Ascora theme.
- * Version:     2.0.0
+ * Version:     2.1.1
  * Author:      Abdul Kadir
  * Author URI:  https://abkadir.com
  * Text Domain: ascora-wc
@@ -83,6 +83,7 @@ final class Ascora_WooCommerce
         require_once ASCORA_WC_PATH . 'core/ascora-wc-pr-taxonomy/taxonomy-metabox-style.php';
         require_once ASCORA_WC_PATH . 'core/ascora-wc-pr-taxonomy/taxonomy-data-save.php';
         require_once ASCORA_WC_PATH . 'core/mega-category-menu.php';
+        require_once ASCORA_WC_PATH . 'includes/widgets/ascora-top-rated-widget.php';
     }
 
     /**
@@ -248,6 +249,7 @@ final class Ascora_WooCommerce
 Ascora_WooCommerce::instance();
 add_action('widgets_init', function () {
     register_widget('Ascora_Price_Filter_Widget');
+    register_widget('Ascora_Top_Rated_Products_Widget');
 });
 
 // add_action('wp_enqueue_scripts', function () {

@@ -151,3 +151,48 @@ jQuery(function ($) {
     $("#ascora-filter-reset").fadeOut(150);
   });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const widgets = document.querySelectorAll(
+    ".ascora-shop-sidebar .product_list_widget li"
+  );
+
+  widgets.forEach((li) => {
+    const link = li.querySelector("a");
+    if (!link) return;
+
+    const img = link.querySelector("img");
+    const title = link.querySelector(".product-title");
+    const rating = li.querySelector(".star-rating");
+    const price = li.querySelector(".amount");
+
+    /* ---------- Image wrapper ---------- */
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "ascora-product-img";
+
+    if (img) imgWrap.appendChild(img);
+
+    /* ---------- Meta wrapper ---------- */
+    const metaWrap = document.createElement("div");
+    metaWrap.className = "ascora-product-meta";
+
+    if (title) metaWrap.appendChild(title);
+    if (rating) metaWrap.appendChild(rating);
+    if (price) metaWrap.appendChild(price);
+
+    /* ---------- rebuild LI ---------- */
+    const href = link.getAttribute("href");
+
+    li.innerHTML = "";
+    li.appendChild(imgWrap);
+    li.appendChild(metaWrap);
+
+    /* ---------- make whole card clickable (optional) ---------- */
+    if (href) {
+      li.style.cursor = "pointer";
+      li.addEventListener("click", function () {
+        window.location.href = href;
+      });
+    }
+  });
+});
